@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<style>
+/* Remove default bullets */
+ul, #myUL {
+    list-style-type: none;
+  }
+  
+/* Remove margins and padding from the parent ul */
+#myUL {
+    margin: 0;
+    padding: 0;
+  }
+  
+/* Style the caret/arrow */
+.caret {
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+  }
+  
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+    transform: rotate(90deg);
+  }
+  
+/* Hide the nested list */
+.nested {
+    display: none;
+  }
+  
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
+    display: block;
+  }
+</style>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul id="myUL"></ul>
+</body>
+
+<!-- https://www.w3schools.com/howto/howto_js_treeview.asp -->
+<!-- https://www.w3schools.com/js/js_htmldom_nodes.asp -->
+
+<script>
+// Creates the objects
+const c1 = {nome:"Chapa", filhos:[]};
+const c2 = {nome:"Paraf", filhos:[]};
+
+const b1 = {nome:"Cabeca", filhos:[c1]};
+const b2 = {nome:"Pe", filhos:[c1, c2]};
+
+const a1 = {nome:"Elevador", filhos:[b1, b2]};
+// Adds the objects to the page
+function addStuff(stuff, where) {
+     // Adds the stuff to the where
+     const para = document.createElement("li");
+     const sP = document.createElement("span");
+    // Set the atributes
+    const node = document.createTextNode(stuff.nome);
+    sP.append(node);
+    const element = document.getElementById(where);
+    element.appendChild(para);
+    para.appendChild(sP);
+
+    // Checks if the object have children
+    if (stuff.filhos.length > 0) {
+        // Set the atributes
+        sP.setAttribute("class", "caret");
+        // Includes the object to attach the children
+        const para1 = document.createElement("ul");
+        const nomeLista = stuff.nome + "-filhos";
+        para1.setAttribute("id", nomeLista);
+        para1.setAttribute("class", "nested");
+        // const element1 = document.getElementById(stuff.nome);
+        para.appendChild(para1);
+        // Loop trough the children
+        for (let filho of stuff.filhos) {
+            addStuff(filho, nomeLista);
+        }
+    }
+}
+// Add the object
+addStuff(a1, "myUL")
+// Adds the toggle functionality
+var toggler = document.getElementsByClassName("caret");
+var i;
+
+for (i = 0; i < toggler.length; i++) {
+    toggler[i].addEventListener("click", function() {
+        this.parentElement.querySelector(".nested").classList.toggle("active");
+        this.classList.toggle("caret-down");
+    });
+}
+
+</script>
+
+</html>
